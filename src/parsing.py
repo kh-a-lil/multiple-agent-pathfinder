@@ -111,7 +111,23 @@ class parse_class:
                 self.map.add_zone(new_zone)
 
             elif line.startswith("connection"):
-                pass
+                name = line.split(":", 1)[0].strip()
+                line = line.split(":", 1)[1].strip()
+                new_con: Connection = Connection()
+                links = line.split(maxsplit=1)[0]
+                if sum([1 for c in links if c == "-"]) != 1:
+                    raise ValueError(f"wrong syntax at line {i}")
+                new_con.zone1 = links.split("-", 1)[0].strip()
+                new_con.zone2 = links.split("-", 1)[1].strip()
+                if "[" in line:
+                    if "]" not in line:
+                        raise ValueError(f"wrong syntax at line {i}")
+                    con_attr = line.split("[", 1)[1].replace("]", "").split("=")[1]
+                    new_con.max_link_capacity = int(con_attr)
+                try:
+                    self.map.add_connection(new_con)
+                except KeyError:
+                    raise ValueError("a connection connecting none existant zone")
 
             else:
                 raise ValueError(f"unkowen argument at line {i}")
