@@ -17,10 +17,10 @@ def main():
     # with open(sys.argv[1], "r") as f:
     #     parser: parse_class = parse_class(f)
 
-    for s in parser.map.connections.values():
-        print(s.zone1)
-        print(s.zone2)
-        print(s.max_link_capacity, "\n\n\n")
+    # for s in parser.map.connections.values():
+    #     print(s.zone1)
+    #     print(s.zone2)
+    #     print(s.max_link_capacity, "\n\n\n")
 
 
 if __name__ == "__main__":
