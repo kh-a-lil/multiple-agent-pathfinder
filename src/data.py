@@ -19,8 +19,6 @@ class Zone:
     max_drones: int = 1
     color: Optional[str] = None
 
-    # We add these flags because the Start and End hubs
-    # have special capacity rules (infinite capacity basically)
     is_start: bool = False
     is_end: bool = False
 

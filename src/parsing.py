@@ -15,16 +15,19 @@ class parse_class:
 
             if line.startswith("nb_drones"):
                 if got_nb_d:
-                    raise ValueError(f"multiple definitions of nb_drones at line {i}")
+                    raise ValueError(
+                        f"multiple definitions of nb_drones at line {i}")
                 self.map.nb_drones = int(line.split(":", 1)[1].strip())
                 got_nb_d = True
 
             elif line.startswith("start_hub") or line.startswith("end_hub"):
                 if line.startswith("start_hub") and got_s_h:
-                    raise ValueError(f"multiple definitions of start_hub at line {i}")
+                    raise ValueError(
+                        f"multiple definitions of start_hub at line {i}")
 
                 if line.startswith("end_hub") and got_e_h:
-                    raise ValueError(f"multiple definitions of end_hub at line {i}")
+                    raise ValueError(
+                        f"multiple definitions of end_hub at line {i}")
 
                 name = line.split(":", 1)[0].strip()
                 line = line.split(":", 1)[1].strip()
@@ -35,28 +38,33 @@ class parse_class:
                 new_zone.x = int(lines[1])
                 new_zone.y = int(lines[2])
                 if "[" in line and "[" in lines[3] and "]" in lines[3]:
-                    attrs: list = lines[3].replace("[", "").replace("]", "").split()
+                    s_attrs: str = lines[3].replace("[", "").replace("]", "")
+                    attrs: list = s_attrs.split()
                     for attr in attrs:
                         if attr.startswith("color"):
                             new_zone.color = attr.split("=", 1)[1]
                         if attr.startswith("max_drones"):
                             new_zone.max_drones = int(attr.split("=", 1)[1])
                             if new_zone.max_drones < self.map.nb_drones:
-                                raise ValueError("start/end hub max drones < nb_drones")
+                                raise ValueError(
+                                    "start/end hub max drones < nb_drones")
                         if attr.startswith("zone"):
                             zone_attr = attr.split("=", 1)[1]
                             if zone_attr == "normal":
                                 new_zone.zone_type = ZoneType.NORMAL
                             elif zone_attr == "blocked":
                                 new_zone.zone_type = ZoneType.BLOCKED
-                                raise ValueError("start/end hub can't be blocked")
+                                raise ValueError(
+                                    "start/end hub can't be blocked")
                             elif zone_attr == "restricted":
                                 new_zone.zone_type = ZoneType.RESTRICTED
-                                raise ValueError("start/end hub can't be restricted")
+                                raise ValueError(
+                                    "start/end hub can't be restricted")
                             elif zone_attr == "priority":
                                 new_zone.zone_type = ZoneType.PRIORITY
                             else:
-                                raise ValueError(f"unkowen zone type at line {i}")
+                                raise ValueError(
+                                    f"unkowen zone type at line {i}")
 
                 if name.startswith("end_hub"):
                     new_zone.is_end = True
@@ -70,16 +78,6 @@ class parse_class:
 
                 self.map.add_zone(new_zone)
 
-                # if name.startswith("end_hub"):
-                #     print(new_zone.is_end)
-                #     print(new_zone.name)
-                #     print(new_zone.x)
-                #     print(new_zone.y)
-                #     print(new_zone.color)
-                #     print(new_zone.max_drones)
-                #     print(new_zone.zone_type)
-                #     print(self.map.end_hub)
-
             elif line.startswith("hub"):
                 name = line.split(":", 1)[0].strip()
                 line = line.split(":", 1)[1].strip()
@@ -90,7 +88,8 @@ class parse_class:
                 new_zone.x = int(lines[1])
                 new_zone.y = int(lines[2])
                 if "[" in line and "[" in lines[3] and "]" in lines[3]:
-                    attrs: list = lines[3].replace("[", "").replace("]", "").split()
+                    s_attrs: str = lines[3].replace("[", "").replace("]", "")
+                    attrs = s_attrs.split()
                     for attr in attrs:
                         if attr.startswith("color"):
                             new_zone.color = attr.split("=", 1)[1]
@@ -107,7 +106,8 @@ class parse_class:
                             elif zone_attr == "priority":
                                 new_zone.zone_type = ZoneType.PRIORITY
                             else:
-                                raise ValueError(f"unkowen zone type at line {i}")
+                                raise ValueError(
+                                    f"unkowen zone type at line {i}")
                 self.map.add_zone(new_zone)
 
             elif line.startswith("connection"):
@@ -122,12 +122,14 @@ class parse_class:
                 if "[" in line:
                     if "]" not in line:
                         raise ValueError(f"wrong syntax at line {i}")
-                    con_attr = line.split("[", 1)[1].replace("]", "").split("=")[1]
-                    new_con.max_link_capacity = int(con_attr)
+                    # c_a = connection attribute
+                    c_a = line.split("[", 1)[1].replace("]", "").split("=")[1]
+                    new_con.max_link_capacity = int(c_a)
                 try:
                     self.map.add_connection(new_con)
                 except KeyError:
-                    raise ValueError("a connection connecting none existant zone")
+                    raise ValueError(
+                        "a connection connecting none existant zone")
 
             else:
                 raise ValueError(f"unkowen argument at line {i}")
