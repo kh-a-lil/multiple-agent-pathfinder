@@ -1,7 +1,7 @@
 from src.data import Graph, Zone, Connection, ZoneType
 
 
-class parse_class:
+class ParseClass:
     def __init__(self, input):
         self.map: Graph = Graph()
         got_nb_d: bool = False
@@ -46,8 +46,7 @@ class parse_class:
                         if attr.startswith("max_drones"):
                             new_zone.max_drones = int(attr.split("=", 1)[1])
                             if new_zone.max_drones < self.map.nb_drones:
-                                raise ValueError(
-                                    "start/end hub max drones < nb_drones")
+                                new_zone.max_drones = self.map.nb_drones
                         if attr.startswith("zone"):
                             zone_attr = attr.split("=", 1)[1]
                             if zone_attr == "normal":
@@ -84,10 +83,9 @@ class parse_class:
                 new_zone: Zone = Zone()
                 lines = line.split(maxsplit=3)
                 new_zone.name = lines[0]
-                self.map.start_hub = lines[0]
                 new_zone.x = int(lines[1])
                 new_zone.y = int(lines[2])
-                if "[" in line and "[" in lines[3] and "]" in lines[3]:
+                if len(lines) > 3 and "[" in lines[3] and "]" in lines[3]:
                     s_attrs: str = lines[3].replace("[", "").replace("]", "")
                     attrs = s_attrs.split()
                     for attr in attrs:
@@ -124,7 +122,13 @@ class parse_class:
                         raise ValueError(f"wrong syntax at line {i}")
                     # c_a = connection attribute
                     c_a = line.split("[", 1)[1].replace("]", "").split("=")[1]
-                    new_con.max_link_capacity = int(c_a)
+                    c_a = c_a.strip()
+                    c_n = line.split("[", 1)[1].replace("]", "").split("=")[0]
+                    c_n = c_n.strip()
+                    if c_n == "max_link_capacity":
+                        new_con.max_link_capacity = int(c_a)
+                    else:
+                        raise ValueError("unkowen connection attribute")
                 try:
                     self.map.add_connection(new_con)
                 except KeyError:
