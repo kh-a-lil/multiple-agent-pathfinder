@@ -1,6 +1,7 @@
 import sys
 from sys import exit, stderr
 from src.parsing import ParseClass
+from src.space_time_pathfinder import PathFinder
 
 
 def main():
