@@ -9,9 +9,34 @@ class PathFinder:
         self.edge_reservations: dict[tuple[frozenset[str], int], int] = {}
 
     def djikstra(self):
-        queue: list = []
-        queue.append((0,self.graph.zones[self.graph.start_hub]))
-        print(queue[0])
+        queue: list[(int,Zone)] = []
+        visited: list[Zone, int] = []
+        heapq.heappush(queue, (0,self.graph.zones[self.graph.start_hub], None))
+
+        while queue:
+            curr_turn , curr_zone, came_from = heapq.heappop(queue)
+            if curr_zone == self.graph.zones[self.graph.end_hub]:
+                return queue
+            if (curr_zone, curr_turn) in visited:
+                continue
+            visited.append((curr_zone, curr_turn))
+
+            next_turn = curr_turn + 1
+            if self.node_reservations[(curr_zone, next_turn)] < curr_zone.max_drones:
+                if (curr_zone, next_turn) in visited:
+                    continue
+                heapq.heappush(queue, (next_turn, curr_zone))
+            for neighbor in self.graph.adj_list[curr_zone.name]:
+                if neighbor.zone_type == ZoneType.NORMAL or neighbor.zone_type == ZoneType.PRIORITY:
+                    if (neighbor, next_turn) in visited:
+                        continue
+                    if self.node_reservations[(neighbor, next_turn)] < neighbor.max_drones:
+                        if self.edge_reservations[((curr_zone, neighbor), curr_turn)] < 
+                        heapq.heappush(queue, (next_turn, neighbor))
+                if neighbor.zone_type == ZoneType.RESTRICTED:
+                    pass
+
+
 
 
     def update_reservations(self):
