@@ -15,7 +15,10 @@ def main():
     except Exception as e:
         print(f"fly-in: an error reading input map: {e}", file=stderr)
         exit(1)
-    parser.map
+
+    solver = PathFinder(parser.map)
+    solver.djikstra()
+
     # with open(sys.argv[1], "r") as f:
     #     parser: ParseClass = ParseClass(f)
 
@@ -23,7 +26,6 @@ def main():
     #     print(s.zone1)
     #     print(s.zone2)
     #     print(s.max_link_capacity, "\n\n\n")
-    print("hello world!")
 
 
 if __name__ == "__main__":
