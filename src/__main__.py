@@ -18,8 +18,8 @@ def main():
 
     solver = PathFinder(parser.map)
     q = solver.djikstra()
-    for key, val in q.items():
-        print(key," - ",val)
+    for key in q:
+        print(key)
 
     # with open(sys.argv[1], "r") as f:
     #     parser: ParseClass = ParseClass(f)
