@@ -12,6 +12,8 @@ class ZoneType(str, Enum):
 
 @dataclass
 class Zone:
+    def __lt__(self, other):
+        return True
     name: str = None
     x: int = None
     y: int = None

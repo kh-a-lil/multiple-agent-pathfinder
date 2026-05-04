@@ -9,32 +9,40 @@ class PathFinder:
         self.edge_reservations: dict[tuple[frozenset[str], int], int] = {}
 
     def djikstra(self):
-        queue: list[(int,Zone)] = []
+        queue: list[(int,Zone, str)] = []
         visited: list[Zone, int] = []
+        memory: dict[tuple[str, int], tuple[str, int]] = {}
         heapq.heappush(queue, (0,self.graph.zones[self.graph.start_hub], None))
-
         while queue:
             curr_turn , curr_zone, came_from = heapq.heappop(queue)
+            memory[(curr_zone.name, curr_turn)] = (came_from, curr_turn - 1)
             if curr_zone == self.graph.zones[self.graph.end_hub]:
-                return queue
+                return memory
             if (curr_zone, curr_turn) in visited:
                 continue
             visited.append((curr_zone, curr_turn))
-
-            next_turn = curr_turn + 1
-            if self.node_reservations[(curr_zone, next_turn)] < curr_zone.max_drones:
+            next_turn: int = curr_turn + 1
+            if self.node_reservations.get((curr_zone.name, next_turn), 0) < curr_zone.max_drones:
                 if (curr_zone, next_turn) in visited:
                     continue
-                heapq.heappush(queue, (next_turn, curr_zone))
-            for neighbor in self.graph.adj_list[curr_zone.name]:
+                heapq.heappush(queue, (next_turn, curr_zone, curr_zone.name))
+            for n in self.graph.adj_list[curr_zone.name]:
+                neighbor = self.graph.zones[n]
                 if neighbor.zone_type == ZoneType.NORMAL or neighbor.zone_type == ZoneType.PRIORITY:
                     if (neighbor, next_turn) in visited:
                         continue
-                    if self.node_reservations[(neighbor, next_turn)] < neighbor.max_drones:
-                        if self.edge_reservations[((curr_zone, neighbor), curr_turn)] < 
-                        heapq.heappush(queue, (next_turn, neighbor))
+                    if self.node_reservations.get((neighbor.name, next_turn), 0) < neighbor.max_drones:
+                        if self.edge_reservations.get(((curr_zone.name, neighbor.name), curr_turn), 0) < self.graph.connections[frozenset([curr_zone.name, neighbor.name])].max_link_capacity:
+                            heapq.heappush(queue, (next_turn, neighbor, curr_zone.name))
                 if neighbor.zone_type == ZoneType.RESTRICTED:
-                    pass
+                    next_turn = curr_turn + 2
+                    if (neighbor, next_turn) in visited:
+                        continue
+                    if self.node_reservations.get((neighbor.name, next_turn), 0) < neighbor.max_drones:
+                        if self.edge_reservations.get(((curr_zone.name, neighbor.name), curr_turn), 0) < self.graph.connections[frozenset([curr_zone.name, neighbor.name])].max_link_capacity and \
+                        self.edge_reservations.get(((curr_zone.name, neighbor.name), curr_turn + 1), 0) < self.graph.connections[frozenset([curr_zone.name, neighbor.name])].max_link_capacity:
+                            heapq.heappush(queue, (next_turn, neighbor, curr_zone.name))
+
 
 
 

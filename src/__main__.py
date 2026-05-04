@@ -17,15 +17,17 @@ def main():
         exit(1)
 
     solver = PathFinder(parser.map)
-    solver.djikstra()
+    q = solver.djikstra()
+    for key, val in q.items():
+        print(key," - ",val)
 
     # with open(sys.argv[1], "r") as f:
     #     parser: ParseClass = ParseClass(f)
 
-    # for s in parser.map.connections.values():
-    #     print(s.zone1)
-    #     print(s.zone2)
-    #     print(s.max_link_capacity, "\n\n\n")
+
+    #for s in parser.map.zones.values():
+    #    print(s.name)
+    #    print("\n\n\n")
 
 
 if __name__ == "__main__":

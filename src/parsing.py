@@ -15,26 +15,22 @@ class ParseClass:
 
             if line.startswith("nb_drones"):
                 if got_nb_d:
-                    raise ValueError(
-                        f"multiple definitions of nb_drones at line {i}")
+                    raise ValueError(f"multiple definitions of nb_drones at line {i}")
                 self.map.nb_drones = int(line.split(":", 1)[1].strip())
                 got_nb_d = True
 
             elif line.startswith("start_hub") or line.startswith("end_hub"):
                 if line.startswith("start_hub") and got_s_h:
-                    raise ValueError(
-                        f"multiple definitions of start_hub at line {i}")
+                    raise ValueError(f"multiple definitions of start_hub at line {i}")
 
                 if line.startswith("end_hub") and got_e_h:
-                    raise ValueError(
-                        f"multiple definitions of end_hub at line {i}")
+                    raise ValueError(f"multiple definitions of end_hub at line {i}")
 
                 name = line.split(":", 1)[0].strip()
                 line = line.split(":", 1)[1].strip()
                 new_zone: Zone = Zone()
                 lines = line.split(maxsplit=3)
                 new_zone.name = lines[0]
-                self.map.start_hub = lines[0]
                 new_zone.x = int(lines[1])
                 new_zone.y = int(lines[2])
                 if "[" in line and "[" in lines[3] and "]" in lines[3]:
@@ -53,24 +49,21 @@ class ParseClass:
                                 new_zone.zone_type = ZoneType.NORMAL
                             elif zone_attr == "blocked":
                                 new_zone.zone_type = ZoneType.BLOCKED
-                                raise ValueError(
-                                    "start/end hub can't be blocked")
+                                raise ValueError("start/end hub can't be blocked")
                             elif zone_attr == "restricted":
                                 new_zone.zone_type = ZoneType.RESTRICTED
-                                raise ValueError(
-                                    "start/end hub can't be restricted")
+                                raise ValueError("start/end hub can't be restricted")
                             elif zone_attr == "priority":
                                 new_zone.zone_type = ZoneType.PRIORITY
                             else:
-                                raise ValueError(
-                                    f"unkowen zone type at line {i}")
+                                raise ValueError(f"unkowen zone type at line {i}")
 
                 if name.startswith("end_hub"):
                     new_zone.is_end = True
                     got_e_h = True
                     self.map.end_hub = new_zone.name
 
-                elif name.startswith("start_hub"):
+                if name.startswith("start_hub"):
                     new_zone.is_start = True
                     got_s_h = True
                     self.map.start_hub = new_zone.name
@@ -104,8 +97,7 @@ class ParseClass:
                             elif zone_attr == "priority":
                                 new_zone.zone_type = ZoneType.PRIORITY
                             else:
-                                raise ValueError(
-                                    f"unkowen zone type at line {i}")
+                                raise ValueError(f"unkowen zone type at line {i}")
                 self.map.add_zone(new_zone)
 
             elif line.startswith("connection"):
@@ -132,8 +124,7 @@ class ParseClass:
                 try:
                     self.map.add_connection(new_con)
                 except KeyError:
-                    raise ValueError(
-                        "a connection connecting none existant zone")
+                    raise ValueError("a connection connecting none existant zone")
 
             else:
                 raise ValueError(f"unkowen argument at line {i}")
