@@ -17,9 +17,9 @@ def main():
         exit(1)
 
     solver = PathFinder(parser.map)
-    q = solver.djikstra()
-    for key in q:
-        print(key)
+
+    #for key, val in solver.routs.items():
+    #    print(key, ": \n", val, "\n\n\n")
 
     # with open(sys.argv[1], "r") as f:
     #     parser: ParseClass = ParseClass(f)
@@ -28,7 +28,6 @@ def main():
     #for s in parser.map.zones.values():
     #    print(s.name)
     #    print("\n\n\n")
-
 
 if __name__ == "__main__":
     main()

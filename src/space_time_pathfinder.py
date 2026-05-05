@@ -7,6 +7,7 @@ class PathFinder:
         self.graph: Graph = map
         self.node_reservations: dict[tuple[str, int], int] = {}
         self.edge_reservations: dict[tuple[frozenset[str], int], int] = {}
+        self.looper()
 
     def construct_path(self, memory: dict[tuple[str, int], tuple[str, int]]):
         m_len = len(memory) - 1
@@ -18,6 +19,7 @@ class PathFinder:
                 path.append(dest)
                 dest = list(memory.values())[m_len]
             m_len -= 1
+        path.reverse()
         return path
 
     def djikstra(self):
@@ -86,14 +88,20 @@ class PathFinder:
                         ):
                             heapq.heappush(queue, (next_turn, neighbor, curr_zone.name))
 
-    def update_reservations(self):
-        pass
+    def update_reservations(self, rout):
+        for item in rout:
+            if self.node_reservations.get(item, 0):
+                self.node_reservations[item] += 1
+            else:
+                self.node_reservations[item] = 1
+
 
     def looper(self):
-        self.routs = []
-        for _ in range(1, self.graph.nb_drones + 1):
+        self.routs = {}
+        for i in range(1, self.graph.nb_drones + 1):
             rout = self.djikstra()
-            self.routs.append(rout)
+            self.routs[i] = rout
+            print(rout)
             self.update_reservations(rout)
 
 

@@ -2,6 +2,8 @@ maps
 test.py
 test
 tt
+vis.py
+graph.mmd
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
