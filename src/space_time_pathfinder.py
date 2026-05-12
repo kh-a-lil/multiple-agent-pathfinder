@@ -14,16 +14,12 @@ class PathFinder:
         m_len = len(memory) - 1
         path = []
         dest = list(memory.keys())[-1]
-        #if self.tea == 24:
-        #    for i, v in memory.items():
-        #        print(i, v)
         while m_len >= 0:
             if list(memory.keys())[m_len] == dest:
                 path.append(dest)
                 dest = list(memory.values())[m_len]
             m_len -= 1
         path.reverse()
-        print(path)
         self.tea += 1
         return path
 
@@ -37,7 +33,8 @@ class PathFinder:
             if came_from == curr_zone.name:
                 memory[(curr_zone.name, curr_turn)] = (came_from, curr_turn - 1)
             elif curr_zone.zone_type == "restricted":
-                memory[(curr_zone.name, curr_turn)] = (came_from, curr_turn - 2)
+                memory[(came_from + "-" + curr_zone.name, curr_turn - 1)] = (came_from, curr_turn - 2)
+                memory[(curr_zone.name, curr_turn)] = (came_from + "-" + curr_zone.name, curr_turn - 1)
             else:
                 memory[(curr_zone.name, curr_turn)] = (came_from, curr_turn - 1)
             if curr_zone == self.graph.zones[self.graph.end_hub]:
@@ -112,43 +109,5 @@ class PathFinder:
         for i in range(1, self.graph.nb_drones + 1):
             rout = self.djikstra()
             self.routs[i] = rout
-            #print(rout)
             self.update_reservations(rout)
-
-
-# Initialize an empty Priority Queue.
-# Push the Start node: (Turn 0, "Start_Zone")
-
-# WHILE the Queue is not empty:
-#    Pop the item with the lowest Turn number: (Current_Turn, Current_Node)
-
-#    IF Current_Node is the "End_Zone":
-#        WE FOUND THE BEST PATH!
-#        Save this path, update the Timetable, and move to the next drone!
-
-#    IF (Current_Node, Current_Turn) is in Visited:
-#        Skip it. (We already found a faster way here)
-#    Mark (Current_Node, Current_Turn) as Visited.
-
-#    # --- ACTION 1: WAIT ---
-#    Next_Turn = Current_Turn + 1
-#    Check Timetable: Is 'Current_Node' completely full at 'Next_Turn'?
-#    If NO:
-#        Push (Next_Turn, Current_Node) to Queue
-
-#    # --- ACTION 2: MOVE ---
-#    FOR EACH Neighbor of Current_Node:
-
-#        IF Neighbor is "normal" zone:
-#            Next_Turn = Current_Turn + 1
-#            Check Timetable: Is Neighbor full at Next_Turn?
-#            Check Timetable: Is the Edge connecting them full at Current_Turn?
-#            If NO to both:
-#                Push (Next_Turn, Neighbor) to Queue
-
-#        IF Neighbor is "restricted" zone (Costs 2 turns):
-#            Next_Turn = Current_Turn + 2
-#            Check Timetable: Is Neighbor full at Next_Turn?
-#            Check Timetable: Is the Edge full at Current_Turn AND Current_Turn + 1?
-#            If NO to all:
-#                Push (Next_Turn, Neighbor) to Queue
+        print(self.routs)
