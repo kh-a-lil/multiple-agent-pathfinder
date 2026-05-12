@@ -2,6 +2,7 @@ import sys
 from sys import exit, stderr
 from src.parsing import ParseClass
 from src.space_time_pathfinder import PathFinder
+from pathlib import Path
 
 
 def main():
@@ -17,6 +18,35 @@ def main():
         exit(1)
 
     solver = PathFinder(parser.map)
+    output: list = []
+    i = 0
+    done: bool = False
+    while not done:
+        done = True
+        turn = []
+        for index, rout in solver.routs.items():
+            for name, t in rout:
+                if t == i:
+                    done = False
+                    turn.append(f"{index}-{name}")
+        #print(turn)
+        i += 1
+        output.append(" ".join(turn))
+        if done:
+            break
+    #for i in output:
+    #    print(i)
+    #print(solver.routs)
+
+
+
+    #path: Path = Path(args.output)
+    #path.parent.mkdir(parents=True, exist_ok=True)
+    #try:
+    #    with path.open("w") as f:
+
+    #except Exception as e:
+    #    print(f"CMM: error writing output file: {e}", file=stderr)
 
     #for key, val in solver.routs.items():
     #    print(key, ": \n", val, "\n\n\n")

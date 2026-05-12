@@ -6,7 +6,7 @@ class PathFinder:
     def __init__(self, map: Graph):
         self.graph: Graph = map
         self.node_reservations: dict[tuple[str, int], int] = {}
-        self.edge_reservations: dict[tuple[frozenset[str], int], int] = {}
+        self.edge_reservations: dict[tuple[frozenset[str, str], int], int] = {}
         self.tea = 0
         self.looper()
 
@@ -33,8 +33,13 @@ class PathFinder:
             if came_from == curr_zone.name:
                 memory[(curr_zone.name, curr_turn)] = (came_from, curr_turn - 1)
             elif curr_zone.zone_type == "restricted":
-                memory[(came_from + "-" + curr_zone.name, curr_turn - 1)] = (came_from, curr_turn - 2)
-                memory[(curr_zone.name, curr_turn)] = (came_from + "-" + curr_zone.name, curr_turn - 1)
+                con: Connection = self.graph.connections.get(frozenset((came_from, curr_zone.name)), 0)
+                if con and con.zone1 == came_from:
+                    memory[(came_from + "-" + curr_zone.name, curr_turn - 1)] = (came_from, curr_turn - 2)
+                    memory[(curr_zone.name, curr_turn)] = (came_from + "-" + curr_zone.name, curr_turn - 1)
+                else:
+                    memory[(curr_zone.name + "-" + came_from, curr_turn - 1)] = (came_from, curr_turn - 2)
+                    memory[(curr_zone.name, curr_turn)] = (curr_zone.name + "-" + came_from, curr_turn - 1)
             else:
                 memory[(curr_zone.name, curr_turn)] = (came_from, curr_turn - 1)
             if curr_zone == self.graph.zones[self.graph.end_hub]:
@@ -71,6 +76,7 @@ class PathFinder:
                                 frozenset([curr_zone.name, neighbor.name])
                             ].max_link_capacity
                         ):
+                            #print((frozenset([curr_zone.name, neighbor.name]), curr_turn))
                             heapq.heappush(queue, (next_turn, neighbor, curr_zone.name))
                 if neighbor.zone_type == ZoneType.RESTRICTED:
                     next_turn = curr_turn + 2
@@ -98,10 +104,19 @@ class PathFinder:
 
     def update_reservations(self, rout):
         for item in rout:
+            print(item)
             if self.node_reservations.get(item, 0):
                 self.node_reservations[item] += 1
             else:
                 self.node_reservations[item] = 1
+            #if "-" in item[0]:
+            #    node, neighbor = item[0].split("-", 1)
+            #    if self.edge_reservations.get((frozenset([node, neighbor]), item[1] + 1), 0):
+            #        self.edge_reservations[(frozenset([node, neighbor]), item[1] + 1)] += 1
+            #    else:
+            #        self.edge_reservations[(frozenset([node, neighbor]), item[1] + 1)] = 1
+        print("\n")
+
 
 
     def looper(self):
@@ -110,4 +125,5 @@ class PathFinder:
             rout = self.djikstra()
             self.routs[i] = rout
             self.update_reservations(rout)
-        print(self.routs)
+        #print(self.edge_reservations)
+
