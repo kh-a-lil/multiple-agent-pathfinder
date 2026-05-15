@@ -2,8 +2,6 @@ import sys
 from sys import exit, stderr
 from src.parsing import ParseClass
 from src.space_time_pathfinder import PathFinder
-from pathlib import Path
-
 
 def main():
     if len(sys.argv) != 2:
@@ -19,45 +17,25 @@ def main():
 
     solver = PathFinder(parser.map)
     output: list = []
-    i = 0
+    i = 1
     done: bool = False
     while not done:
         done = True
         turn = []
         for index, rout in solver.routs.items():
+            p_name: str = solver.graph.start_hub
             for name, t in rout:
                 if t == i:
                     done = False
-                    turn.append(f"{index}-{name}")
-        #print(turn)
+                    if name != p_name:
+                        p_name = name
+                        turn.append(f"D{index}-{name}")
         i += 1
-        output.append(" ".join(turn))
         if done:
             break
-    #for i in output:
-    #    print(i)
-    #print(solver.routs)
-
-
-
-    #path: Path = Path(args.output)
-    #path.parent.mkdir(parents=True, exist_ok=True)
-    #try:
-    #    with path.open("w") as f:
-
-    #except Exception as e:
-    #    print(f"CMM: error writing output file: {e}", file=stderr)
-
-    #for key, val in solver.routs.items():
-    #    print(key, ": \n", val, "\n\n\n")
-
-    # with open(sys.argv[1], "r") as f:
-    #     parser: ParseClass = ParseClass(f)
-
-
-    #for s in parser.map.zones.values():
-    #    print(s.name)
-    #    print("\n\n\n")
+        output.append(" ".join(turn))
+    for i in output:
+        print(i)
 
 if __name__ == "__main__":
     main()
