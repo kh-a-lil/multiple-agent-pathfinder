@@ -92,6 +92,13 @@ class PathFinder:
                             < self.graph.connections[
                                 frozenset([curr_zone.name, neighbor.name])
                             ].max_link_capacity
+                        ) and (
+                            self.edge_reservations.get(
+                                (frozenset([curr_zone.name, neighbor.name]), curr_turn + 1), 0
+                            )
+                            < self.graph.connections[
+                                frozenset([curr_zone.name, neighbor.name])
+                            ].max_link_capacity
                         ):
                             heapq.heappush(queue, (next_turn, neighbor, curr_zone.name))
 
@@ -156,6 +163,7 @@ class PathFinder:
                         elif "-" not in loc and "-" in next_loc:
                             edge = frozenset(next_loc.split("-"))
                             self.edge_reservations[(edge, t)] = self.edge_reservations.get((edge, t), 0) + 1
+                            self.edge_reservations[(edge, t + 1)] = self.edge_reservations.get((edge, t), 0) + 1
 
     def looper(self):
         self.routs = {}
