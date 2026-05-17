@@ -13,6 +13,8 @@ class ZoneType(str, Enum):
 @dataclass
 class Zone:
     def __lt__(self, other):
+        if self.zone_type == ZoneType.PRIORITY:
+            return False
         return True
     name: str = None
     x: int = None

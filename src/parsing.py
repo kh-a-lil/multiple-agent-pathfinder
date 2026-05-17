@@ -33,16 +33,13 @@ class ParseClass:
                 new_zone.name = lines[0]
                 new_zone.x = int(lines[1])
                 new_zone.y = int(lines[2])
+                new_zone.max_drones = float('inf')
                 if "[" in line and "[" in lines[3] and "]" in lines[3]:
                     s_attrs: str = lines[3].replace("[", "").replace("]", "")
                     attrs: list = s_attrs.split()
                     for attr in attrs:
                         if attr.startswith("color"):
                             new_zone.color = attr.split("=", 1)[1]
-                        if attr.startswith("max_drones"):
-                            new_zone.max_drones = int(attr.split("=", 1)[1])
-                            if new_zone.max_drones < self.map.nb_drones:
-                                new_zone.max_drones = self.map.nb_drones
                         if attr.startswith("zone"):
                             zone_attr = attr.split("=", 1)[1]
                             if zone_attr == "normal":
