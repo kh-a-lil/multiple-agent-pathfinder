@@ -5,6 +5,15 @@ from src.space_time_pathfinder import PathFinder
 
 
 def main() -> None:
+    """Run the fly-in simulation from a map configuration file.
+
+    The function parses the input map, computes drone routes, and
+    prints the movements for each simulation turn.
+
+    Raises:
+        SystemExit: If the input arguments are invalid or the map
+            cannot be parsed.
+    """
     if len(sys.argv) != 2:
         print('usage: uv python3 -m src <input map>\nor\
               \nmake run MAP="<input map>"')
@@ -40,4 +49,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"fly-in: an error happend: {e}", file=stderr)
+        exit(1)

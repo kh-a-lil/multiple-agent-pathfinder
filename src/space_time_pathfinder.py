@@ -10,7 +10,13 @@ from typing import cast
 
 
 class PathFinder:
+    """Compute and visualize drone routes through the graph."""
     def __init__(self, map: Graph):
+        """Initializes the pathfinder.
+
+        Args:
+            map: Graph containing zones and connections.
+        """
         self.graph: Graph = map
         self.node_reservations: dict[tuple[str, int], int] = {}
         self.edge_reservations: dict[tuple[frozenset[str], int], int] = {}
@@ -18,6 +24,14 @@ class PathFinder:
 
     def construct_path(
             self, memory: dict[tuple[str, int], tuple[str, int]]) -> list:
+        """Builds a path from traversal memory.
+
+        Args:
+            memory: Traversal parent mapping.
+
+        Returns:
+            Reconstructed route.
+        """
         path = []
         node = list(memory.keys())[-1]
         while node[0]:
@@ -27,6 +41,11 @@ class PathFinder:
         return path
 
     def djikstra(self) -> list:
+        """Finds a valid route using Dijkstra search.
+
+        Returns:
+            Computed route.
+        """
         queue: list[Any] = []
         visited: set[Any] = set()
         memory: dict[tuple[str, int], tuple[str, int]] = {}
@@ -140,6 +159,7 @@ class PathFinder:
         return []
 
     def visualize(self) -> None:
+        """Displays the simulation visualization."""
         mpl.rcParams["toolbar"] = "None"
         pos = {z.name: (z.x, -z.y) for z in self.graph.zones.values()}
         for edge in self.graph.connections.keys():
@@ -270,6 +290,11 @@ class PathFinder:
         plt.show()
 
     def update_reservations(self, rout: list) -> None:
+        """Updates node and edge reservations.
+
+        Args:
+            rout: Route to reserve.
+        """
         if rout:
             for i in range(len(rout)):
                 loc, t = rout[i]
@@ -296,6 +321,7 @@ class PathFinder:
                             )
 
     def looper(self) -> None:
+        """Generates routes for all drones."""
         self.routs = {}
         for i in range(1, self.graph.nb_drones + 1):
             rout: list = self.djikstra()

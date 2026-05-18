@@ -4,6 +4,8 @@ from typing import Optional
 
 
 class ZoneType(str, Enum):
+    """Enumeration of supported zone categories in the simulation."""
+
     NORMAL = "normal"
     BLOCKED = "blocked"
     RESTRICTED = "restricted"
@@ -12,10 +14,14 @@ class ZoneType(str, Enum):
 
 @dataclass
 class Zone:
+    """Represent a zone node in the drone navigation graph."""
+
     def __lt__(self, other: "Zone") -> bool:
+        """Compare zones for priority ordering."""
         if self.zone_type == ZoneType.PRIORITY:
             return False
         return True
+
     name: str = ""
     x: int = 0
     y: int = 0
@@ -29,6 +35,8 @@ class Zone:
 
 @dataclass
 class Connection:
+    """Represent a connection between two zones in the graph."""
+
     zone1: str = ""
     zone2: str = ""
     max_link_capacity: int = 1
@@ -36,6 +44,8 @@ class Connection:
 
 @dataclass
 class Graph:
+    """Store the drone simulation graph and its connectivity."""
+
     nb_drones: int = 0
     start_hub: str = ""
     end_hub: str = ""

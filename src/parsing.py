@@ -3,7 +3,16 @@ from typing import TextIO
 
 
 class ParseClass:
+    """Parse a simulation configuration file into a graph structure."""
     def __init__(self, input: TextIO):
+        """Initialize the parser and build the graph from a file stream.
+
+        Args:
+            input: Open text stream containing the simulation configuration.
+
+        Raises:
+            ValueError: If the configuration syntax or values are invalid.
+        """
         self.map: Graph = Graph()
         got_nb_d: bool = False
         got_s_h: bool = False
@@ -117,7 +126,6 @@ class ParseClass:
                 if "[" in line:
                     if "]" not in line:
                         raise ValueError(f"wrong syntax at line {i}")
-                    # c_a = connection attribute
                     c_a = line.split("[", 1)[1].replace("]", "").split("=")[1]
                     c_a = c_a.strip()
                     c_n = line.split("[", 1)[1].replace("]", "").split("=")[0]
