@@ -168,6 +168,8 @@ class ParseClass:
                     raise ValueError(f"wrong syntax at line {i}")
                 new_con.zone1 = links.split("-", 1)[0].strip()
                 new_con.zone2 = links.split("-", 1)[1].strip()
+                if new_con.zone1 == new_con.zone2:
+                    raise ValueError(f"ouroboros detected at line {i}")
                 if "[" in line:
                     if "]" not in line:
                         raise ValueError(f"wrong syntax at line {i}")

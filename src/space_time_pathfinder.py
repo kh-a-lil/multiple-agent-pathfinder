@@ -51,8 +51,11 @@ class PathFinder:
         memory: dict[tuple[str, int], tuple[str, int]] = {}
         heapq.heappush(
             queue, (0, self.graph.zones[self.graph.start_hub], None))
+        max_t = len(self.graph.zones) + self.graph.nb_drones * 5
         while queue:
             curr_turn, curr_zone, came_from = heapq.heappop(queue)
+            if curr_turn > max_t:
+                continue
             if came_from == curr_zone.name:
                 memory[(curr_zone.name, curr_turn)] = (
                     came_from, curr_turn - 1)
@@ -318,7 +321,8 @@ class PathFinder:
                                 self.edge_reservations.get((edge, t), 0) + 1
                             )
                             self.edge_reservations[(edge, t + 1)] = (
-                                self.edge_reservations.get((edge, t), 0) + 1
+                                self.edge_reservations.get((edge, t + 1), 0)
+                                + 1
                             )
 
     def looper(self) -> None:
@@ -326,6 +330,8 @@ class PathFinder:
         self.routs = {}
         for i in range(1, self.graph.nb_drones + 1):
             rout: list = self.djikstra()
+            if not rout:
+                raise ValueError("no path to the end zone")
             self.routs[i] = rout
             self.update_reservations(rout)
         self.visualize()
