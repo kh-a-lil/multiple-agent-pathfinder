@@ -3,6 +3,7 @@ from sys import exit, stderr
 from src.parsing import ParseClass
 from src.space_time_pathfinder import PathFinder
 
+
 def main():
     if len(sys.argv) != 2:
         print('usage: uv python3 -m src <input map>\nor\
@@ -36,6 +37,7 @@ def main():
         output.append(" ".join(turn))
     for i in output:
         print(i)
+
 
 if __name__ == "__main__":
     main()

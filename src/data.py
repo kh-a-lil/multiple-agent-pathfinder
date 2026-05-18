@@ -16,11 +16,11 @@ class Zone:
         if self.zone_type == ZoneType.PRIORITY:
             return False
         return True
-    name: str = None
-    x: int = None
-    y: int = None
+    name: str = ""
+    x: int = 0
+    y: int = 0
     zone_type: ZoneType = ZoneType.NORMAL
-    max_drones: int = 1
+    max_drones: int | float = 1
     color: Optional[str] = None
 
     is_start: bool = False
@@ -29,16 +29,16 @@ class Zone:
 
 @dataclass
 class Connection:
-    zone1: str = None
-    zone2: str = None
+    zone1: str = ""
+    zone2: str = ""
     max_link_capacity: int = 1
 
 
 @dataclass
 class Graph:
     nb_drones: int = 0
-    start_hub: Optional[str] = None
-    end_hub: Optional[str] = None
+    start_hub: str = ""
+    end_hub: str = ""
 
     zones: dict[str, Zone] = field(default_factory=dict)
 
