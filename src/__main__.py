@@ -53,7 +53,6 @@ class engine:
 
 if __name__ == "__main__":
     try:
-
         engine.run()
     except Exception as e:
         print(f"fly-in: an error happend: {e}", file=stderr)
