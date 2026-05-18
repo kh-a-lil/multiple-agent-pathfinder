@@ -3,8 +3,10 @@ import heapq
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from matplotlib.backend_bases import KeyEvent, Event
 import random
 from typing import Any
+from typing import cast
 
 
 class PathFinder:
@@ -14,7 +16,8 @@ class PathFinder:
         self.edge_reservations: dict[tuple[frozenset[str], int], int] = {}
         self.looper()
 
-    def construct_path(self, memory: dict[tuple[str, int], tuple[str, int]]):
+    def construct_path(
+            self, memory: dict[tuple[str, int], tuple[str, int]]) -> list:
         path = []
         node = list(memory.keys())[-1]
         while node[0]:
@@ -23,7 +26,7 @@ class PathFinder:
         path.reverse()
         return path
 
-    def djikstra(self):
+    def djikstra(self) -> list:
         queue: list[Any] = []
         visited: set[Any] = set()
         memory: dict[tuple[str, int], tuple[str, int]] = {}
@@ -134,8 +137,9 @@ class PathFinder:
                         ):
                             heapq.heappush(queue, (next_turn, neighbor,
                                                    curr_zone.name))
+        return []
 
-    def visualize(self):
+    def visualize(self) -> None:
         mpl.rcParams["toolbar"] = "None"
         pos = {z.name: (z.x, -z.y) for z in self.graph.zones.values()}
         for edge in self.graph.connections.keys():
@@ -148,7 +152,8 @@ class PathFinder:
             (t for p in self.routs.values() for _, t in p), default=0)
         current_turn = 0
         fig, ax = plt.subplots(figsize=(10, 6))
-        fig.canvas.manager.set_window_title("Fly-In Simulation")
+        if fig.canvas.manager:
+            fig.canvas.manager.set_window_title("Fly-In Simulation")
         fig.patch.set_facecolor("#2b3240")
         plt.tight_layout()
         fig.subplots_adjust(left=0, right=1, bottom=0, top=0.90)
@@ -157,7 +162,7 @@ class PathFinder:
                 self.graph.zones.values())
         }
 
-        def draw():
+        def draw() -> None:
             ax.clear()
             ax.set_facecolor("#3b4862")
             ax.axis("equal")
@@ -213,7 +218,7 @@ class PathFinder:
                         edgecolor="black",
                     ),
                 )
-            groups = {}
+            groups: dict[str, list] = {}
             for d_id, path in self.routs.items():
                 loc = next(
                     (lo for lo, t in reversed(path) if t <= current_turn),
@@ -247,15 +252,16 @@ class PathFinder:
                 )
             fig.canvas.draw()
 
-        def on_key(event):
+        def on_key(event: Event) -> None:
             nonlocal current_turn
-            if event.key == "enter" and current_turn < max_turn:
+            key_event = cast(KeyEvent, event)
+            if key_event.key == "enter" and current_turn < max_turn:
                 current_turn += 1
                 draw()
-            elif event.key == "backspace" and current_turn > 0:
+            elif key_event.key == "backspace" and current_turn > 0:
                 current_turn -= 1
                 draw()
-            elif event.key == "0" and current_turn > 0:
+            elif key_event.key == "0" and current_turn > 0:
                 current_turn = 0
                 draw()
 
@@ -263,7 +269,7 @@ class PathFinder:
         draw()
         plt.show()
 
-    def update_reservations(self, rout):
+    def update_reservations(self, rout: list) -> None:
         if rout:
             for i in range(len(rout)):
                 loc, t = rout[i]
@@ -289,13 +295,10 @@ class PathFinder:
                                 self.edge_reservations.get((edge, t), 0) + 1
                             )
 
-    def looper(self):
+    def looper(self) -> None:
         self.routs = {}
         for i in range(1, self.graph.nb_drones + 1):
-            rout = self.djikstra()
+            rout: list = self.djikstra()
             self.routs[i] = rout
             self.update_reservations(rout)
         self.visualize()
-
-
-def hgf(): ...

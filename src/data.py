@@ -12,7 +12,7 @@ class ZoneType(str, Enum):
 
 @dataclass
 class Zone:
-    def __lt__(self, other):
+    def __lt__(self, other: "Zone") -> bool:
         if self.zone_type == ZoneType.PRIORITY:
             return False
         return True

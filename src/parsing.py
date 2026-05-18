@@ -1,8 +1,9 @@
 from src.data import Graph, Zone, Connection, ZoneType
+from typing import TextIO
 
 
 class ParseClass:
-    def __init__(self, input):
+    def __init__(self, input: TextIO):
         self.map: Graph = Graph()
         got_nb_d: bool = False
         got_s_h: bool = False

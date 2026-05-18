@@ -4,7 +4,7 @@ from src.parsing import ParseClass
 from src.space_time_pathfinder import PathFinder
 
 
-def main():
+def main() -> None:
     if len(sys.argv) != 2:
         print('usage: uv python3 -m src <input map>\nor\
               \nmake run MAP="<input map>"')
