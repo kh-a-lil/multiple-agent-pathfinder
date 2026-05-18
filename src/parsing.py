@@ -18,11 +18,12 @@ class ParseClass:
         got_s_h: bool = False
         got_e_h: bool = False
 
+        locs: list[tuple[int]] = []
+
         for i, li in enumerate(input, 1):
             line: str = li.split("#", 1)[0].strip()
             if not line:
                 continue
-
             if line.startswith("nb_drones"):
                 if got_nb_d:
                     raise ValueError(
@@ -46,14 +47,29 @@ class ParseClass:
                 new_zone.name = lines[0]
                 new_zone.x = int(lines[1])
                 new_zone.y = int(lines[2])
+                if (new_zone.x, new_zone.y) in locs:
+                    raise ValueError(
+                        f"coords already in use at line {i}")
+                locs.append((new_zone.x, new_zone.y))
                 new_zone.max_drones = float("inf")
-                if "[" in line and "[" in lines[3] and "]" in lines[3]:
+
+                if len(lines) > 3 and (
+                        "[" not in lines[3] or
+                        "]" not in lines[3]) and\
+                        lines[3].strip():
+                    raise ValueError(
+                            f"wrong syntax at line {i}")
+                if len(lines) > 3 and\
+                        "[" in line and\
+                        "[" in lines[3] and\
+                        "]" in lines[3]:
                     s_attrs: str = lines[3].replace("[", "").replace("]", "")
                     attrs: list = s_attrs.split()
                     for attr in attrs:
-                        if attr.startswith("color"):
+
+                        if attr.startswith("color="):
                             new_zone.color = attr.split("=", 1)[1]
-                        if attr.startswith("zone"):
+                        if attr.startswith("zone="):
                             zone_attr = attr.split("=", 1)[1]
                             if zone_attr == "normal":
                                 new_zone.zone_type = ZoneType.NORMAL
@@ -70,6 +86,9 @@ class ParseClass:
                             else:
                                 raise ValueError(
                                     f"unkowen zone type at line {i}")
+                        #elif not attr.startswith("max_drones="):
+                        #    raise ValueError(
+                        #            f"unkowen attribute at line {i}")
 
                 if name.startswith("end_hub"):
                     new_zone.is_end = True
@@ -91,7 +110,17 @@ class ParseClass:
                 new_zone_h.name = lines[0]
                 new_zone_h.x = int(lines[1])
                 new_zone_h.y = int(lines[2])
-                if len(lines) > 3 and "[" in lines[3] and "]" in lines[3]:
+                if (new_zone_h.x, new_zone_h.y) in locs:
+                    raise ValueError(
+                        f"coords already in use at line {i}")
+                locs.append((new_zone_h.x, new_zone_h.y))
+                if len(lines) > 3 and (
+                        "[" not in lines[3] or
+                        "]" not in lines[3] and
+                        lines[3].strip()):
+                    raise ValueError(
+                            f"wrong syntax at line {i}")
+                if len(lines) > 3 and ("[" in lines[3] and "]" in lines[3]):
                     s_attrs_h: str = lines[3].replace("[", "").replace("]", "")
                     attrs = s_attrs_h.split()
                     for attr in attrs:
