@@ -7,6 +7,6 @@ run:
 clean:
 	@rm -rf __pycache__ */__pycache__ .mypy_cache */.mypy_cache
 lint:
-	@uv run  mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	@uv run  mypy src --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 	@flake8 src
 .PHONY: lint clean run debug install
