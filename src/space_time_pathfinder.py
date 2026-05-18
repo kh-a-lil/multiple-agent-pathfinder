@@ -161,12 +161,13 @@ class PathFinder:
     def visualize(self) -> None:
         """Displays the simulation visualization."""
         mpl.rcParams["toolbar"] = "None"
-        pos = {z.name: (z.x, -z.y) for z in self.graph.zones.values()}
+        pos: dict[str, tuple[float, float]] = {
+            z.name: (z.x, -z.y) for z in self.graph.zones.values()}
         for edge in self.graph.connections.keys():
             n1, n2 = tuple(edge)
             pos[f"{n1}-{n2}"] = pos[f"{n2}-{n1}"] = (
-                (pos[n1][0] + pos[n2][0]) // 2,
-                (pos[n1][1] + pos[n2][1]) // 2,
+                (pos[n1][0] + pos[n2][0]) / 2,
+                (pos[n1][1] + pos[n2][1]) / 2,
             )
         max_turn = max(
             (t for p in self.routs.values() for _, t in p), default=0)

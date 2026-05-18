@@ -6,6 +6,7 @@ from src.space_time_pathfinder import PathFinder
 
 class engine:
     """initilizes the simulation process"""
+    @staticmethod
     def run() -> None:
         """Run the fly-in simulation from a map configuration file.
 
@@ -52,6 +53,7 @@ class engine:
 
 if __name__ == "__main__":
     try:
+
         engine.run()
     except Exception as e:
         print(f"fly-in: an error happend: {e}", file=stderr)

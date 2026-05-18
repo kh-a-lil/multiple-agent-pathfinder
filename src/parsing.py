@@ -18,7 +18,7 @@ class ParseClass:
         got_s_h: bool = False
         got_e_h: bool = False
 
-        locs: list[tuple[int]] = []
+        locs: list[tuple[int, int]] = []
 
         for i, li in enumerate(input, 1):
             line: str = li.split("#", 1)[0].strip()
@@ -69,7 +69,7 @@ class ParseClass:
 
                         if attr.startswith("color="):
                             new_zone.color = attr.split("=", 1)[1]
-                        if attr.startswith("zone="):
+                        elif attr.startswith("zone="):
                             zone_attr = attr.split("=", 1)[1]
                             if zone_attr == "normal":
                                 new_zone.zone_type = ZoneType.NORMAL
@@ -86,9 +86,9 @@ class ParseClass:
                             else:
                                 raise ValueError(
                                     f"unkowen zone type at line {i}")
-                        #elif not attr.startswith("max_drones="):
-                        #    raise ValueError(
-                        #            f"unkowen attribute at line {i}")
+                        elif not attr.startswith("max_drones="):
+                            raise ValueError(
+                                    f"unkowen attribute at line {i}")
 
                 if name.startswith("end_hub"):
                     new_zone.is_end = True
@@ -124,11 +124,11 @@ class ParseClass:
                     s_attrs_h: str = lines[3].replace("[", "").replace("]", "")
                     attrs = s_attrs_h.split()
                     for attr in attrs:
-                        if attr.startswith("color"):
+                        if attr.startswith("color="):
                             new_zone_h.color = attr.split("=", 1)[1]
-                        if attr.startswith("max_drones"):
+                        elif attr.startswith("max_drones="):
                             new_zone_h.max_drones = int(attr.split("=", 1)[1])
-                        if attr.startswith("zone"):
+                        elif attr.startswith("zone="):
                             zone_attr = attr.split("=", 1)[1]
                             if zone_attr == "normal":
                                 new_zone_h.zone_type = ZoneType.NORMAL
@@ -140,6 +140,9 @@ class ParseClass:
                                 new_zone_h.zone_type = ZoneType.PRIORITY
                             else:
                                 raise ValueError(
+                                    f"unkowen zone type at line {i}")
+                        elif not attr.startswith("max_drones="):
+                            raise ValueError(
                                     f"unkowen zone type at line {i}")
                 self.map.add_zone(new_zone_h)
 
@@ -171,3 +174,5 @@ class ParseClass:
 
             else:
                 raise ValueError(f"unkowen argument at line {i}")
+        if not got_nb_d or not got_e_h or not got_s_h:
+            raise ValueError("a mandatory argument not found")
