@@ -58,6 +58,8 @@ class Graph:
 
     def add_zone(self, zone: Zone) -> None:
         """Adds a zone and initializes its adjacency list."""
+        if zone.name in self.zones.keys():
+            raise ValueError()
         self.zones[zone.name] = zone
         if zone.name not in self.adj_list:
             self.adj_list[zone.name] = []

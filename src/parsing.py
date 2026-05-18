@@ -52,7 +52,9 @@ class ParseClass:
                         f"coords already in use at line {i}")
                 locs.append((new_zone.x, new_zone.y))
                 new_zone.max_drones = float("inf")
-
+                if new_zone.max_drones < 0:
+                    raise ValueError(
+                        f"invalid value at line {i}")
                 if len(lines) > 3 and (
                         "[" not in lines[3] or
                         "]" not in lines[3]) and\
@@ -86,7 +88,12 @@ class ParseClass:
                             else:
                                 raise ValueError(
                                     f"unkowen zone type at line {i}")
-                        elif not attr.startswith("max_drones="):
+                        elif attr.startswith("max_drones="):
+                            tmp = int(attr.split("=", 1)[1])
+                            if tmp < 0:
+                                raise ValueError(
+                                    f"invalid value at line {i}")
+                        else:
                             raise ValueError(
                                     f"unkowen attribute at line {i}")
 
@@ -128,6 +135,9 @@ class ParseClass:
                             new_zone_h.color = attr.split("=", 1)[1]
                         elif attr.startswith("max_drones="):
                             new_zone_h.max_drones = int(attr.split("=", 1)[1])
+                            if new_zone_h.max_drones < 0:
+                                raise ValueError(
+                                    f"invalid value at line {i}")
                         elif attr.startswith("zone="):
                             zone_attr = attr.split("=", 1)[1]
                             if zone_attr == "normal":
@@ -141,10 +151,13 @@ class ParseClass:
                             else:
                                 raise ValueError(
                                     f"unkowen zone type at line {i}")
-                        elif not attr.startswith("max_drones="):
+                        else:
                             raise ValueError(
                                     f"unkowen zone type at line {i}")
-                self.map.add_zone(new_zone_h)
+                try:
+                    self.map.add_zone(new_zone_h)
+                except ValueError:
+                    raise ValueError(f"zone already exists at line {i}")
 
             elif line.startswith("connection"):
                 name = line.split(":", 1)[0].strip()
