@@ -8,8 +8,8 @@ class ParseClass:
         got_s_h: bool = False
         got_e_h: bool = False
 
-        for i, line in enumerate(input, 1):
-            line: str = line.split("#", 1)[0].strip()
+        for i, li in enumerate(input, 1):
+            line: str = li.split("#", 1)[0].strip()
             if not line:
                 continue
 
@@ -76,33 +76,33 @@ class ParseClass:
             elif line.startswith("hub"):
                 name = line.split(":", 1)[0].strip()
                 line = line.split(":", 1)[1].strip()
-                new_zone: Zone = Zone()
+                new_zone_h: Zone = Zone()
                 lines = line.split(maxsplit=3)
-                new_zone.name = lines[0]
-                new_zone.x = int(lines[1])
-                new_zone.y = int(lines[2])
+                new_zone_h.name = lines[0]
+                new_zone_h.x = int(lines[1])
+                new_zone_h.y = int(lines[2])
                 if len(lines) > 3 and "[" in lines[3] and "]" in lines[3]:
-                    s_attrs: str = lines[3].replace("[", "").replace("]", "")
-                    attrs = s_attrs.split()
+                    s_attrs_h: str = lines[3].replace("[", "").replace("]", "")
+                    attrs = s_attrs_h.split()
                     for attr in attrs:
                         if attr.startswith("color"):
-                            new_zone.color = attr.split("=", 1)[1]
+                            new_zone_h.color = attr.split("=", 1)[1]
                         if attr.startswith("max_drones"):
-                            new_zone.max_drones = int(attr.split("=", 1)[1])
+                            new_zone_h.max_drones = int(attr.split("=", 1)[1])
                         if attr.startswith("zone"):
                             zone_attr = attr.split("=", 1)[1]
                             if zone_attr == "normal":
-                                new_zone.zone_type = ZoneType.NORMAL
+                                new_zone_h.zone_type = ZoneType.NORMAL
                             elif zone_attr == "blocked":
-                                new_zone.zone_type = ZoneType.BLOCKED
+                                new_zone_h.zone_type = ZoneType.BLOCKED
                             elif zone_attr == "restricted":
-                                new_zone.zone_type = ZoneType.RESTRICTED
+                                new_zone_h.zone_type = ZoneType.RESTRICTED
                             elif zone_attr == "priority":
-                                new_zone.zone_type = ZoneType.PRIORITY
+                                new_zone_h.zone_type = ZoneType.PRIORITY
                             else:
                                 raise ValueError(
                                     f"unkowen zone type at line {i}")
-                self.map.add_zone(new_zone)
+                self.map.add_zone(new_zone_h)
 
             elif line.startswith("connection"):
                 name = line.split(":", 1)[0].strip()
