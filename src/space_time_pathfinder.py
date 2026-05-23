@@ -297,7 +297,6 @@ class PathFinder:
     def visualize_tmp(self, filename="simulation.mp4"):
         print(f"Generating smooth visualization: {filename}...")
 
-        # --- 1. BUILD POSITIONS ---
         pos = {}
         for zone in self.graph.zones.values():
             pos[zone.name] = (zone.x, -zone.y)
@@ -309,7 +308,6 @@ class PathFinder:
             pos[f"{n1}-{n2}"] = (x_mid, y_mid)
             pos[f"{n2}-{n1}"] = (x_mid, y_mid)
 
-        # --- 2. BUILD CONTINUOUS TIMELINES PER DRONE ---
         max_turn = (
             max(max(t for loc, t in path) for path in self.routs.values())
             if self.routs
@@ -322,7 +320,6 @@ class PathFinder:
             full_timeline = []
             last_loc = path[0][0]
 
-            # Fill every single turn so the drone always has a known location
             for t in range(max_turn + 1):
                 if t in path_dict:
                     last_loc = path_dict[t]
@@ -330,12 +327,11 @@ class PathFinder:
 
             drone_timelines[d_id] = full_timeline
 
-        # --- 3. THEME & COLORS ---
         BG = "#0B1220"
         EDGE = "#94A3B8"
         DEFAULT_NODE = "#6366F1"
         TEXT = "#F8FAFC"
-        DRONE_COLOR = "#22D3EE"  # Cyan for the actual drones
+        DRONE_COLOR = "#22D3EE"
 
         THEME_COLORS = {
             "red": "#991B1B",
@@ -363,7 +359,6 @@ class PathFinder:
             except ValueError:
                 return DEFAULT_NODE
 
-        # --- 4. DYNAMIC SCALING SETUP ---
         num_zones = len(self.graph.zones)
         is_massive = num_zones > 20
         fig_width = 20 if is_massive else 10
@@ -377,9 +372,8 @@ class PathFinder:
         node_size = 150 if is_massive else 600
         label_font = 6 if is_massive else 10
 
-        # ANIMATION SETTINGS
         FRAMES_PER_TURN = (
-            15  # Generates 15 intermediate frames between Turn 1 and Turn 2
+            15
         )
         total_frames = max_turn * FRAMES_PER_TURN + 1
 
@@ -396,7 +390,6 @@ class PathFinder:
             x1, y1 = pos[loc1]
             x2, y2 = pos[loc2]
 
-            # Calculate smooth intermediate position
             curr_x = x1 + (x2 - x1) * progress
             curr_y = y1 + (y2 - y1) * progress
             return round(curr_x, 3), round(curr_y, 3)
@@ -409,7 +402,6 @@ class PathFinder:
             T = frame_idx / FRAMES_PER_TURN
             current_turn = int(T)
 
-            # Draw Edges
             drawn_edges = set()
             for node, neighbors in self.graph.adj_list.items():
                 for neighbor in neighbors:
@@ -429,10 +421,9 @@ class PathFinder:
                         zorder=1,
                     )
 
-            # Draw Empty Nodes (Just structure, no drone counts inside)
             for loc, (x, y) in pos.items():
                 if "-" in loc:
-                    continue  # Don't draw invisible midpoints
+                    continue
                 zone_obj = self.graph.zones[loc]
                 n_color = get_node_color(getattr(zone_obj, "color", None))
                 ax.scatter(
@@ -456,7 +447,6 @@ class PathFinder:
                     zorder=3,
                 )
 
-            # Calculate ALL Drone Positions and Group Them
             pos_groups = {}
             for d_id in drone_timelines.keys():
                 curr_pos = get_drone_pos(d_id, T)
@@ -464,17 +454,14 @@ class PathFinder:
                     pos_groups[curr_pos] = []
                 pos_groups[curr_pos].append(d_id)
 
-            # Draw Drones & Tags
             for (x, y), drones in pos_groups.items():
                 main_drone = drones[0]
                 extra = len(drones) - 1
 
-                # Format: [D-1] + 2
                 tag = f"[D-{main_drone}]"
                 if extra > 0:
                     tag += f" + {extra}"
 
-                # Draw the actual drone as a bright cyan dot
                 ax.scatter(x, y, s=node_size * 0.4,
                            color=DRONE_COLOR, zorder=4)
 
@@ -511,7 +498,6 @@ class PathFinder:
             ax.axis("off")
             plt.tight_layout(pad=2)
 
-        # Smooth animation settings (20 fps)
         writer = FFMpegWriter(fps=20,
                               metadata={"artist": "Matplotlib"},
                               bitrate=1800)
