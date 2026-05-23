@@ -244,7 +244,7 @@ Generated videos include:
 
 ## Large Map Stress Test
 
-<!-- INSERT VIDEO/GIF HERE -->
+![Simulation Demo](demo-interactive.gif)
 
 ---
 
