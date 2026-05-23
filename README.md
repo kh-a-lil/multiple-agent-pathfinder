@@ -238,14 +238,7 @@ Generated videos include:
 
 ## Simulation Demo
 
-<video
-    src="vis/simulation-easy.mp4"
-    controls
-    autoplay
-    loop
-    muted
-    width="800">
-</video>
+[Watch Simulation Demo](vis/simulation-easy.mp4)
 
 ---
 
