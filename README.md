@@ -238,21 +238,16 @@ Generated videos include:
 
 ## Simulation Demo
 
-[Watch Simulation Demo](vis/simulation-easy.mp4)
+![Simulation Demo](vis/demo-interactive.gif)
 
 ---
 
 ## Large Map Stress Test
 
-![Simulation Demo](demo-interactive.gif)
+![Simulation Demo](vis/demo-challenger.gif)
 
 ---
 
-## Smooth MP4 Export
-
-<!-- INSERT VIDEO/GIF HERE -->
-
----
 
 # Mermaid Helper Script
 
