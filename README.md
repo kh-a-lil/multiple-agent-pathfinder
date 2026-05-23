@@ -238,7 +238,14 @@ Generated videos include:
 
 ## Simulation Demo
 
-<!-- INSERT VIDEO/GIF HERE -->
+<video
+    src="vis/simulation-easy.mp4"
+    controls
+    autoplay
+    loop
+    muted
+    width="800">
+</video>
 
 ---
 
