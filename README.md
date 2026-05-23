@@ -8,7 +8,7 @@ The project parses a custom map format, computes collision-free routes using a r
 
 This project was developed as part of the 42 School curriculum.
 
-![Simulation Demo](vis/demo-easy.gif)
+![Simulation Demo](assets/demo-easy.gif)
 
 ---
 
@@ -240,13 +240,13 @@ Generated videos include:
 
 ## Simulation Demo
 
-![Simulation Demo](vis/demo-interactive.gif)
+![Simulation Demo](assets/demo-interactive.gif)
 
 ---
 
 ## Large Map Stress Test
 
-![Simulation Demo](vis/demo-challenger.gif)
+![Simulation Demo](assets/demo-challenger.gif)
 
 ---
 
