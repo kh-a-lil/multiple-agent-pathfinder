@@ -560,5 +560,5 @@ class PathFinder:
                 raise ValueError("no path to the end zone")
             self.routs[i] = rout
             self.update_reservations(rout)
-        self.visualize()
-        # self.visualize_tmp()
+        # self.visualize()
+        self.visualize_tmp()
