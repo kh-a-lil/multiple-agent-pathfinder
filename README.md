@@ -8,6 +8,8 @@ The project parses a custom map format, computes collision-free routes using a r
 
 This project was developed as part of the 42 School curriculum.
 
+![Simulation Demo](vis/demo-easy.gif)
+
 ---
 
 # Features
